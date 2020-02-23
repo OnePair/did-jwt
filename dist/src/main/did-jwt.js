@@ -54,7 +54,6 @@ var DIDJwt = /** @class */ (function () {
                             switch (_a.label) {
                                 case 0:
                                     _a.trys.push([0, 2, , 3]);
-                                    console.log("Verifying jwt...");
                                     return [4 /*yield*/, resolver.resolve(did)];
                                 case 1:
                                     didDoc = _a.sent();

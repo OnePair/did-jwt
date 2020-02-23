@@ -18,7 +18,6 @@ export class DIDJwt {
     options?: JWT.VerifyOptions<false>): Promise<object> {
     return new Promise<object>(async (onSuccess: Function, onError: Function) => {
       try {
-        console.log("Verifying jwt...");
         // 1) Resolve the did document
         let didDoc: DIDDocument = await resolver.resolve(did);
 
