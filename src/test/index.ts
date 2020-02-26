@@ -3,11 +3,11 @@ import { expect, assert } from "chai";
 import { DIDJwt } from "../main";
 import { DidJwk, getResolver } from "node-did-jwk";
 import { Resolver } from "did-resolver";
-import { JWK, JWT } from "jose";
+import { JWK } from "node-jose";
 
 describe("DID JWK Tests", () => {
-  let jwk: JWK.ECKey;
-  let jwk1: JWK.ECKey;
+  let jwk: JWK.Key;
+  let jwk1: JWK.Key;
 
   let did: DidJwk;
   let did1: DidJwk;
@@ -15,10 +15,10 @@ describe("DID JWK Tests", () => {
   let jwt: string;
   let resolver: Resolver;
 
-  before(() => {
+  before(async () => {
     //jwk = JWK.generateSync("EC", "secp256k1");
-    jwk = JWK.generateSync("EC", "P-256");
-    jwk1 = JWK.generateSync("EC", "P-256");
+    jwk = await JWK.createKey("EC", "P-256", { alg: "ES256" });
+    jwk1 = await JWK.createKey("EC", "P-256", { alg: "ES256" });
 
     did = new DidJwk(jwk);
     did1 = new DidJwk(jwk1);
@@ -30,7 +30,11 @@ describe("DID JWK Tests", () => {
   });
 
   it("Should create a JWT", () => {
-    jwt = DIDJwt.sign({ "name": "anonymous" }, jwk, { issuer: did.getDidUri() });
+    jwt = DIDJwt.sign({ "name": "anonymous" }, jwk, {
+      issuer: did.getDidUri(),
+      algorithm: "ES256"
+    });
+    console.log(jwt);
     assert.isNotNull(jwt);
   });
 

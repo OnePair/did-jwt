@@ -35,14 +35,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var jose_1 = require("jose");
+var node_jose_1 = require("node-jose");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var did_resolver_1 = require("did-resolver");
 var DIDJwt = /** @class */ (function () {
     function DIDJwt() {
     }
     DIDJwt.sign = function (payload, key, options) {
-        return jose_1.JWT.sign(payload, key, options);
+        //return JWT.sign(payload, key, options);
+        return jsonwebtoken_1.default.sign(payload, key.toPEM(true), options);
     };
     DIDJwt.verify = function (resolver, jwt, did, options) {
         return __awaiter(this, void 0, void 0, function () {
@@ -53,11 +58,11 @@ var DIDJwt = /** @class */ (function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    _a.trys.push([0, 2, , 3]);
+                                    _a.trys.push([0, 3, , 4]);
                                     return [4 /*yield*/, resolver.resolve(did)];
                                 case 1:
                                     didDoc = _a.sent();
-                                    decodedJwt = jose_1.JWT.decode(jwt);
+                                    decodedJwt = jsonwebtoken_1.default.decode(jwt);
                                     issuer_1 = decodedJwt["iss"];
                                     parsedIssuerDid = did_resolver_1.parse(issuer_1);
                                     // Default issuing key
@@ -67,14 +72,16 @@ var DIDJwt = /** @class */ (function () {
                                         var id = _a.id;
                                         return id === issuer_1;
                                     });
-                                    jwk = publicKey["publicKeyJwk"];
-                                    onSuccess(jose_1.JWT.verify(jwt, jwk, options));
-                                    return [3 /*break*/, 3];
+                                    return [4 /*yield*/, node_jose_1.JWK.asKey(publicKey["publicKeyJwk"])];
                                 case 2:
+                                    jwk = _a.sent();
+                                    onSuccess(jsonwebtoken_1.default.verify(jwt, jwk.toPEM(false), options));
+                                    return [3 /*break*/, 4];
+                                case 3:
                                     err_1 = _a.sent();
                                     onError(err_1);
-                                    return [3 /*break*/, 3];
-                                case 3: return [2 /*return*/];
+                                    return [3 /*break*/, 4];
+                                case 4: return [2 /*return*/];
                             }
                         });
                     }); })];

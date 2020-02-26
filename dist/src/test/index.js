@@ -40,7 +40,7 @@ var chai_1 = require("chai");
 var main_1 = require("../main");
 var node_did_jwk_1 = require("node-did-jwk");
 var did_resolver_1 = require("did-resolver");
-var jose_1 = require("jose");
+var node_jose_1 = require("node-jose");
 describe("DID JWK Tests", function () {
     var jwk;
     var jwk1;
@@ -48,19 +48,33 @@ describe("DID JWK Tests", function () {
     var did1;
     var jwt;
     var resolver;
-    before(function () {
-        //jwk = JWK.generateSync("EC", "secp256k1");
-        jwk = jose_1.JWK.generateSync("EC", "P-256");
-        jwk1 = jose_1.JWK.generateSync("EC", "P-256");
-        did = new node_did_jwk_1.DidJwk(jwk);
-        did1 = new node_did_jwk_1.DidJwk(jwk1);
-        var jwkResolver = node_did_jwk_1.getResolver();
-        resolver = new did_resolver_1.Resolver({
-            jwk: jwkResolver
+    before(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var jwkResolver;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, node_jose_1.JWK.createKey("EC", "P-256", { alg: "ES256" })];
+                case 1:
+                    //jwk = JWK.generateSync("EC", "secp256k1");
+                    jwk = _a.sent();
+                    return [4 /*yield*/, node_jose_1.JWK.createKey("EC", "P-256", { alg: "ES256" })];
+                case 2:
+                    jwk1 = _a.sent();
+                    did = new node_did_jwk_1.DidJwk(jwk);
+                    did1 = new node_did_jwk_1.DidJwk(jwk1);
+                    jwkResolver = node_did_jwk_1.getResolver();
+                    resolver = new did_resolver_1.Resolver({
+                        jwk: jwkResolver
+                    });
+                    return [2 /*return*/];
+            }
         });
-    });
+    }); });
     it("Should create a JWT", function () {
-        jwt = main_1.DIDJwt.sign({ "name": "anonymous" }, jwk, { issuer: did.getDidUri() });
+        jwt = main_1.DIDJwt.sign({ "name": "anonymous" }, jwk, {
+            issuer: did.getDidUri(),
+            algorithm: "ES256"
+        });
+        console.log(jwt);
         chai_1.assert.isNotNull(jwt);
     });
     it("JWT should be valid", function () {
