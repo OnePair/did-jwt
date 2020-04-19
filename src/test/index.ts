@@ -32,14 +32,16 @@ describe("DID JWK Tests", () => {
   it("Should create a JWT", () => {
     jwt = DIDJwt.sign({ "name": "anonymous" }, jwk, {
       issuer: did.getDidUri(),
+      keyid: "keys-1",
       algorithm: "ES256"
     });
-    console.log(jwt);
+    //console.log(jwt);
     assert.isNotNull(jwt);
   });
 
   it("JWT should be valid", () => {
     assert.doesNotThrow(async () => {
+      console.log(jwt);
       await DIDJwt.verify(resolver, jwt, did.getDidUri());
     });
   });

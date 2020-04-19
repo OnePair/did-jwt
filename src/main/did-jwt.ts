@@ -8,12 +8,18 @@ import {
   parse
 } from "did-resolver";
 
+import Util from "util";
+
+/*
+* TODOs
+* 1) Key ID
+* 2) External Signer
+*/
 export class DIDJwt {
   public static sign(payload: object, key: JWK.Key,
     options?: JWT.SignOptions): string {
     //return JWT.sign(payload, key, options);
     return JWT.sign(payload, key.toPEM(true), options);
-
   }
 
 
@@ -24,18 +30,21 @@ export class DIDJwt {
     return new Promise<object>(async (onSuccess: Function, onError: Function) => {
       try {
         // 1) Resolve the did document
-        let didDoc: DIDDocument = await resolver.resolve(did);
+        const didDoc: DIDDocument = await resolver.resolve(did);
+
 
         // 2) Get the jwk
-        let decodedJwt: any = JWT.decode(jwt);
-        let issuer: string = decodedJwt["iss"];
+        const decodedJwt: any = JWT.decode(jwt, { complete: true });
+        const issuer: string = decodedJwt["iss"];
+        let keyId: string = decodedJwt["header"]["kid"];
 
-        let parsedIssuerDid: ParsedDID = parse(issuer);
         // Default issuing key
-        if (parsedIssuerDid.fragment == undefined)
-          issuer = issuer + "#keys-1";
+        if (keyId == undefined)
+          keyId = "#keys-1";
 
-        let publicKey: object = didDoc.publicKey.find(({ id }) => id === issuer);
+        keyId = Util.format("%s#%s", did, keyId);
+
+        let publicKey: object = didDoc.publicKey.find(({ id }) => id === keyId);
         let jwk: JWK.Key = await JWK.asKey(publicKey["publicKeyJwk"]);
 
         onSuccess(JWT.verify(jwt, jwk.toPEM(false), options));

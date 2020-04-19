@@ -41,7 +41,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var node_jose_1 = require("node-jose");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var did_resolver_1 = require("did-resolver");
+var util_1 = __importDefault(require("util"));
+/*
+* TODOs
+* 1) Key ID
+* 2) External Signer
+*/
 var DIDJwt = /** @class */ (function () {
     function DIDJwt() {
     }
@@ -54,7 +59,7 @@ var DIDJwt = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (onSuccess, onError) { return __awaiter(_this, void 0, void 0, function () {
-                        var didDoc, decodedJwt, issuer_1, parsedIssuerDid, publicKey, jwk, err_1;
+                        var didDoc, decodedJwt, issuer, keyId_1, publicKey, jwk, err_1;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -62,15 +67,16 @@ var DIDJwt = /** @class */ (function () {
                                     return [4 /*yield*/, resolver.resolve(did)];
                                 case 1:
                                     didDoc = _a.sent();
-                                    decodedJwt = jsonwebtoken_1.default.decode(jwt);
-                                    issuer_1 = decodedJwt["iss"];
-                                    parsedIssuerDid = did_resolver_1.parse(issuer_1);
+                                    decodedJwt = jsonwebtoken_1.default.decode(jwt, { complete: true });
+                                    issuer = decodedJwt["iss"];
+                                    keyId_1 = decodedJwt["header"]["kid"];
                                     // Default issuing key
-                                    if (parsedIssuerDid.fragment == undefined)
-                                        issuer_1 = issuer_1 + "#keys-1";
+                                    if (keyId_1 == undefined)
+                                        keyId_1 = "#keys-1";
+                                    keyId_1 = util_1.default.format("%s#%s", did, keyId_1);
                                     publicKey = didDoc.publicKey.find(function (_a) {
                                         var id = _a.id;
-                                        return id === issuer_1;
+                                        return id === keyId_1;
                                     });
                                     return [4 /*yield*/, node_jose_1.JWK.asKey(publicKey["publicKeyJwk"])];
                                 case 2:

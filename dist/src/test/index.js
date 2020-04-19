@@ -72,16 +72,19 @@ describe("DID JWK Tests", function () {
     it("Should create a JWT", function () {
         jwt = main_1.DIDJwt.sign({ "name": "anonymous" }, jwk, {
             issuer: did.getDidUri(),
+            keyid: "keys-1",
             algorithm: "ES256"
         });
-        console.log(jwt);
+        //console.log(jwt);
         chai_1.assert.isNotNull(jwt);
     });
     it("JWT should be valid", function () {
         chai_1.assert.doesNotThrow(function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, did.getDidUri())];
+                    case 0:
+                        console.log(jwt);
+                        return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, did.getDidUri())];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
