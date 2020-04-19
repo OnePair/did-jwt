@@ -1,25 +1,20 @@
 import { JWK } from "node-jose"
-import JWT from "jsonwebtoken";
-
 import {
   Resolver,
-  DIDDocument,
-  ParsedDID,
-  parse
+  DIDDocument
 } from "did-resolver";
+import { JwtSigner } from "./signers";
 
+import JWT from "jsonwebtoken";
 import Util from "util";
 
 /*
 * TODOs
-* 1) Key ID
-* 2) External Signer
+* 1) External Signer
 */
 export class DIDJwt {
-  public static sign(payload: object, key: JWK.Key,
-    options?: JWT.SignOptions): string {
-    //return JWT.sign(payload, key, options);
-    return JWT.sign(payload, key.toPEM(true), options);
+  public static sign(payload: object, signer: JwtSigner): string {
+    return signer.sign(payload);
   }
 
 
@@ -35,7 +30,6 @@ export class DIDJwt {
 
         // 2) Get the jwk
         const decodedJwt: any = JWT.decode(jwt, { complete: true });
-        const issuer: string = decodedJwt["iss"];
         let keyId: string = decodedJwt["header"]["kid"];
 
         // Default issuing key
