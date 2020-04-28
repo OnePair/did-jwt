@@ -35,6 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var chai_1 = require("chai");
 var main_1 = require("../main");
@@ -42,6 +45,8 @@ var node_did_jwk_1 = require("node-did-jwk");
 var did_resolver_1 = require("did-resolver");
 var node_jose_1 = require("node-jose");
 var signers_1 = require("../main/signers");
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
 describe("DID JWK Tests", function () {
     var jwk;
     var jwk1;
@@ -55,24 +60,16 @@ describe("DID JWK Tests", function () {
         var jwkResolver;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, node_jose_1.JWK.createKey("EC", "P-256", { alg: "ES256" })];
+                case 0: return [4 /*yield*/, node_jose_1.JWK.asKey(fs_1.default.readFileSync(path_1.default.join(__dirname, "resources/jwk1.json")))];
                 case 1:
                     jwk = _a.sent();
-                    return [4 /*yield*/, node_jose_1.JWK.createKey("EC", "P-256", { alg: "ES256" })];
+                    return [4 /*yield*/, node_jose_1.JWK.asKey(fs_1.default.readFileSync(path_1.default.join(__dirname, "resources/jwk2.json")))];
                 case 2:
                     jwk1 = _a.sent();
                     did = new node_did_jwk_1.DidJwk(jwk);
                     did1 = new node_did_jwk_1.DidJwk(jwk1);
-                    signer1 = new signers_1.NodeJwtSigner(jwk, {
-                        issuer: did.getDidUri(),
-                        keyid: "keys-1",
-                        algorithm: "ES256"
-                    });
-                    signer2 = new signers_1.NodeJwtSigner(jwk, {
-                        issuer: did1.getDidUri(),
-                        keyid: "keys-1",
-                        algorithm: "ES256"
-                    });
+                    signer1 = new signers_1.NodeJwtSigner(jwk);
+                    signer2 = new signers_1.NodeJwtSigner(jwk);
                     jwkResolver = node_did_jwk_1.getResolver();
                     resolver = new did_resolver_1.Resolver({
                         jwk: jwkResolver
@@ -82,16 +79,18 @@ describe("DID JWK Tests", function () {
         });
     }); });
     it("Should create a JWT", function () {
-        jwt = main_1.DIDJwt.sign({ "name": "anonymous" }, signer1);
+        jwt = main_1.DIDJwt.sign({ "name": "anonymous" }, signer1, {
+            issuer: did.getDidUri(),
+            keyid: "keys-1",
+            algorithm: "ES256"
+        });
         chai_1.assert.isNotNull(jwt);
     });
     it("JWT should be valid", function () {
         chai_1.assert.doesNotThrow(function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log(jwt);
-                        return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, did.getDidUri())];
+                    case 0: return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, did.getDidUri())];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

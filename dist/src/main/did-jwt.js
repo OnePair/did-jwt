@@ -49,8 +49,8 @@ var util_1 = __importDefault(require("util"));
 var DIDJwt = /** @class */ (function () {
     function DIDJwt() {
     }
-    DIDJwt.sign = function (payload, signer) {
-        return signer.sign(payload);
+    DIDJwt.sign = function (payload, signer, options) {
+        return signer.sign(payload, options);
     };
     DIDJwt.verify = function (resolver, jwt, did, options) {
         return __awaiter(this, void 0, void 0, function () {

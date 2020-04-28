@@ -13,8 +13,9 @@ import Util from "util";
 * 1) External Signer
 */
 export class DIDJwt {
-  public static sign(payload: object, signer: JwtSigner): string {
-    return signer.sign(payload);
+  public static sign(payload: object, signer: JwtSigner,
+    options?: JWT.SignOptions): string {
+    return signer.sign(payload, options);
   }
 
 

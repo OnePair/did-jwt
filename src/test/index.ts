@@ -6,6 +6,9 @@ import { Resolver } from "did-resolver";
 import { JWK } from "node-jose";
 import { JwtSigner, NodeJwtSigner } from "../main/signers";
 
+import fs from "fs";
+import path from "path";
+
 describe("DID JWK Tests", () => {
   let jwk: JWK.Key;
   let jwk1: JWK.Key;
@@ -20,24 +23,15 @@ describe("DID JWK Tests", () => {
   let resolver: Resolver;
 
   before(async () => {
-    jwk = await JWK.createKey("EC", "P-256", { alg: "ES256" });
-    jwk1 = await JWK.createKey("EC", "P-256", { alg: "ES256" });
+    jwk = await JWK.asKey(fs.readFileSync(path.join(__dirname, "resources/jwk1.json")));
+    jwk1 = await JWK.asKey(fs.readFileSync(path.join(__dirname, "resources/jwk2.json")));
 
     did = new DidJwk(jwk);
     did1 = new DidJwk(jwk1);
 
-    signer1 = new NodeJwtSigner(jwk, {
-      issuer: did.getDidUri(),
-      keyid: "keys-1",
-      algorithm: "ES256"
-    });
+    signer1 = new NodeJwtSigner(jwk);
 
-    signer2 = new NodeJwtSigner(jwk, {
-      issuer: did1.getDidUri(),
-      keyid: "keys-1",
-      algorithm: "ES256"
-    });
-
+    signer2 = new NodeJwtSigner(jwk);
 
     const jwkResolver = getResolver();
     resolver = new Resolver({
@@ -46,13 +40,16 @@ describe("DID JWK Tests", () => {
   });
 
   it("Should create a JWT", () => {
-    jwt = DIDJwt.sign({ "name": "anonymous" }, signer1);
+    jwt = DIDJwt.sign({ "name": "anonymous" }, signer1, {
+      issuer: did.getDidUri(),
+      keyid: "keys-1",
+      algorithm: "ES256"
+    });
     assert.isNotNull(jwt);
   });
 
   it("JWT should be valid", () => {
     assert.doesNotThrow(async () => {
-      console.log(jwt);
       await DIDJwt.verify(resolver, jwt, did.getDidUri());
     });
   });

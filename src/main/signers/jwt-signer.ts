@@ -1,3 +1,6 @@
+import JWT from "jsonwebtoken";
+
+
 export interface JwtSigner {
-  sign(payload: object): string;
+  sign(payload: object, options?: JWT.SignOptions): string;
 }
