@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var node_jose_1 = require("node-jose");
+var errors_1 = require("./errors");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var util_1 = __importDefault(require("util"));
 var DIDJwt = /** @class */ (function () {
@@ -61,6 +62,9 @@ var DIDJwt = /** @class */ (function () {
                                     return [4 /*yield*/, resolver.resolve(did)];
                                 case 1:
                                     didDoc = _a.sent();
+                                    // 2) Check the issuer
+                                    if (didDoc.id != did)
+                                        throw new errors_1.WrongIssuerError("Wrong issuer!");
                                     decodedJwt = jsonwebtoken_1.default.decode(jwt, { complete: true });
                                     keyId_1 = decodedJwt["header"]["kid"];
                                     // Default issuing key

@@ -4,6 +4,7 @@ import {
   DIDDocument
 } from "did-resolver";
 import { JwtSigner } from "./signers";
+import { WrongIssuerError } from "./errors";
 
 import JWT from "jsonwebtoken";
 import Util from "util";
@@ -22,6 +23,10 @@ export class DIDJwt {
       try {
         // 1) Resolve the did document
         const didDoc: DIDDocument = await resolver.resolve(did);
+
+        // 2) Check the issuer
+        if (didDoc.id != did)
+          throw new WrongIssuerError("Wrong issuer!");
 
         // 2) Get the jwk
         const decodedJwt: any = JWT.decode(jwt, { complete: true });
