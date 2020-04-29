@@ -47,11 +47,11 @@ var node_jose_1 = require("node-jose");
 var signers_1 = require("../main/signers");
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-describe("DID JWK Tests", function () {
-    var jwk;
+describe("DID JWT Tests", function () {
     var jwk1;
-    var did;
+    var jwk2;
     var did1;
+    var did2;
     var signer1;
     var signer2;
     var jwt;
@@ -62,14 +62,14 @@ describe("DID JWK Tests", function () {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, node_jose_1.JWK.asKey(fs_1.default.readFileSync(path_1.default.join(__dirname, "resources/jwk1.json")))];
                 case 1:
-                    jwk = _a.sent();
+                    jwk1 = _a.sent();
                     return [4 /*yield*/, node_jose_1.JWK.asKey(fs_1.default.readFileSync(path_1.default.join(__dirname, "resources/jwk2.json")))];
                 case 2:
-                    jwk1 = _a.sent();
-                    did = new node_did_jwk_1.DidJwk(jwk);
+                    jwk2 = _a.sent();
                     did1 = new node_did_jwk_1.DidJwk(jwk1);
-                    signer1 = new signers_1.NodeJwtSigner(jwk);
-                    signer2 = new signers_1.NodeJwtSigner(jwk);
+                    did2 = new node_did_jwk_1.DidJwk(jwk2);
+                    signer1 = new signers_1.NodeJwtSigner(jwk1);
+                    signer2 = new signers_1.NodeJwtSigner(jwk2);
                     jwkResolver = node_did_jwk_1.getResolver();
                     resolver = new did_resolver_1.Resolver({
                         jwk: jwkResolver
@@ -78,40 +78,99 @@ describe("DID JWK Tests", function () {
             }
         });
     }); });
-    it("Should create a JWT", function () {
-        jwt = main_1.DIDJwt.sign({ "name": "anonymous" }, signer1, {
-            issuer: did.getDidUri(),
-            keyid: "keys-1",
-            algorithm: "ES256"
-        });
-        chai_1.assert.isNotNull(jwt);
-    });
-    it("JWT should be valid", function () {
-        chai_1.assert.doesNotThrow(function () { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, did.getDidUri())];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
+    it("Should create a JWT without an exception", function () {
+        chai_1.assert.doesNotThrow(function () {
+            jwt = main_1.DIDJwt.sign({ "name": "anonymous" }, signer1, {
+                issuer: did1.getDidUri(),
+                keyid: "keys-1",
+                algorithm: "ES256"
             });
-        }); });
+            chai_1.assert.isNotNull(jwt);
+        });
     });
-    it("JWT should be invalid", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it("JWT verification against the right issuer should pass", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, did1.getDidUri())];
+                case 1:
+                    result = _a.sent();
+                    chai_1.expect(result["iss"]).equal(did1.getDidUri());
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("JWT verification against the wrong issuer should faild", function () { return __awaiter(void 0, void 0, void 0, function () {
         var err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, did1.getDidUri())];
+                    return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, did2.getDidUri())];
                 case 1:
                     _a.sent();
-                    chai_1.assert.fail("expected exception not thrown");
+                    chai_1.assert.fail("Verification should of failed!");
                     return [3 /*break*/, 3];
                 case 2:
                     err_1 = _a.sent();
-                    chai_1.expect(err_1).not.null;
+                    chai_1.expect(err_1["name"]).equal("JsonWebTokenError");
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); });
+    it("JWT verification against a null issuer should fail", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var err_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, null)];
+                case 1:
+                    _a.sent();
+                    chai_1.assert.fail("Verification should of failed!");
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_2 = _a.sent();
+                    chai_1.expect(err_2).to.not.be.a("null");
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); });
+    it("JWT verification against an undefined issuer should fail", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var err_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, undefined)];
+                case 1:
+                    _a.sent();
+                    chai_1.assert.fail("Verification should of failed!");
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_3 = _a.sent();
+                    chai_1.expect(err_3).to.not.be.a("null");
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); });
+    it("JWT verification against a undefined unsupported should fail", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var err_4;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, main_1.DIDJwt.verify(resolver, jwt, "did:example:1234")];
+                case 1:
+                    _a.sent();
+                    chai_1.assert.fail("Verification should of failed!");
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_4 = _a.sent();
+                    chai_1.expect(err_4).to.not.be.a("null");
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }

@@ -42,10 +42,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var node_jose_1 = require("node-jose");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var util_1 = __importDefault(require("util"));
-/*
-* TODOs
-* 1) External Signer
-*/
 var DIDJwt = /** @class */ (function () {
     function DIDJwt() {
     }

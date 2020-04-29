@@ -8,16 +8,11 @@ import { JwtSigner } from "./signers";
 import JWT from "jsonwebtoken";
 import Util from "util";
 
-/*
-* TODOs
-* 1) External Signer
-*/
 export class DIDJwt {
   public static sign(payload: object, signer: JwtSigner,
     options?: JWT.SignOptions): string {
     return signer.sign(payload, options);
   }
-
 
   public static async verify(resolver: Resolver, jwt: string,
     did: string): Promise<object>
@@ -27,7 +22,6 @@ export class DIDJwt {
       try {
         // 1) Resolve the did document
         const didDoc: DIDDocument = await resolver.resolve(did);
-
 
         // 2) Get the jwk
         const decodedJwt: any = JWT.decode(jwt, { complete: true });
