@@ -57,38 +57,51 @@ describe("DID JWT Tests", () => {
   });
 
   it("JWT verification against the wrong issuer should faild", async () => {
+    var error = null
+
     try {
       await DIDJwt.verify(resolver, jwt, did2.getDidUri());
       assert.fail("Verification should of failed!");
     } catch (err) {
-      expect(err["name"]).equal("JsonWebTokenError");
+      error = err;
     }
+
+    expect(error["name"]).equal("JsonWebTokenError");
   });
 
   it("JWT verification against a null issuer should fail", async () => {
+    var error = null;
+
     try {
       await DIDJwt.verify(resolver, jwt, null);
-      assert.fail("Verification should of failed!");
     } catch (err) {
-      expect(err).to.not.be.a("null");
+      error = err;
     }
+
+    expect(error).to.not.be.a("null");
   });
 
   it("JWT verification against an undefined issuer should fail", async () => {
+    var error = null;
     try {
       await DIDJwt.verify(resolver, jwt, undefined);
       assert.fail("Verification should of failed!");
     } catch (err) {
-      expect(err).to.not.be.a("null");
+      error = err;
     }
+
+    expect(error).to.not.be.a("null");
   });
 
   it("JWT verification against a undefined unsupported should fail", async () => {
+    var error = null;
     try {
       await DIDJwt.verify(resolver, jwt, "did:example:1234");
       assert.fail("Verification should of failed!");
     } catch (err) {
-      expect(err).to.not.be.a("null");
+      error = err;
     }
+
+    expect(error).to.not.be.a("null");
   });
 });
