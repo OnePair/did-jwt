@@ -35,8 +35,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var chai_1 = require("chai");
@@ -45,8 +49,8 @@ var node_did_jwk_1 = require("node-did-jwk");
 var did_resolver_1 = require("did-resolver");
 var node_jose_1 = require("node-jose");
 var signers_1 = require("../main/signers");
-var fs_1 = __importDefault(require("fs"));
-var path_1 = __importDefault(require("path"));
+var fs = __importStar(require("fs"));
+var path = __importStar(require("path"));
 describe("DID JWT Tests", function () {
     var jwk1;
     var jwk2;
@@ -60,10 +64,10 @@ describe("DID JWT Tests", function () {
         var jwkResolver;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, node_jose_1.JWK.asKey(fs_1.default.readFileSync(path_1.default.join(__dirname, "resources/jwk1.json")))];
+                case 0: return [4 /*yield*/, node_jose_1.JWK.asKey(fs.readFileSync(path.join(__dirname, "resources/jwk1.json")))];
                 case 1:
                     jwk1 = _a.sent();
-                    return [4 /*yield*/, node_jose_1.JWK.asKey(fs_1.default.readFileSync(path_1.default.join(__dirname, "resources/jwk2.json")))];
+                    return [4 /*yield*/, node_jose_1.JWK.asKey(fs.readFileSync(path.join(__dirname, "resources/jwk2.json")))];
                 case 2:
                     jwk2 = _a.sent();
                     did1 = new node_did_jwk_1.DidJwk(jwk1);

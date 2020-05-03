@@ -1,6 +1,6 @@
 import { JwtSigner } from "../jwt-signer";
 import { JWK } from "node-jose";
-import JWT from "jsonwebtoken";
+import * as JWT from "jsonwebtoken";
 export declare class NodeJwtSigner implements JwtSigner {
     private key;
     constructor(key: JWK.Key);

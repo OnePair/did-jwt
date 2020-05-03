@@ -6,8 +6,8 @@ import { Resolver } from "did-resolver";
 import { JWK } from "node-jose";
 import { JwtSigner, NodeJwtSigner } from "../main/signers";
 
-import fs from "fs";
-import path from "path";
+import * as fs from "fs";
+import * as path from "path";
 
 describe("DID JWT Tests", () => {
   let jwk1: JWK.Key;

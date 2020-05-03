@@ -35,11 +35,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var JWT = __importStar(require("jsonwebtoken"));
 var NodeJwtSigner = /** @class */ (function () {
     function NodeJwtSigner(key) {
         this.key = key;
@@ -47,7 +51,7 @@ var NodeJwtSigner = /** @class */ (function () {
     NodeJwtSigner.prototype.sign = function (payload, options) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, jsonwebtoken_1.default.sign(payload, this.key.toPEM(true), options)];
+                return [2 /*return*/, JWT.sign(payload, this.key.toPEM(true), options)];
             });
         });
     };

@@ -35,14 +35,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var node_jose_1 = require("node-jose");
 var errors_1 = require("./errors");
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var util_1 = __importDefault(require("util"));
+var JWT = __importStar(require("jsonwebtoken"));
+var Util = __importStar(require("util"));
 var DIDJwt = /** @class */ (function () {
     function DIDJwt() {
     }
@@ -72,12 +76,12 @@ var DIDJwt = /** @class */ (function () {
                                     // 2) Check the issuer
                                     if (didDoc.id != did)
                                         throw new errors_1.WrongIssuerError("Wrong issuer!");
-                                    decodedJwt = jsonwebtoken_1.default.decode(jwt, { complete: true });
+                                    decodedJwt = JWT.decode(jwt, { complete: true });
                                     keyId_1 = decodedJwt["header"]["kid"];
                                     // Default issuing key
                                     if (keyId_1 == undefined)
                                         keyId_1 = "#keys-1";
-                                    keyId_1 = util_1.default.format("%s#%s", did, keyId_1);
+                                    keyId_1 = Util.format("%s#%s", did, keyId_1);
                                     publicKey = didDoc.publicKey.find(function (_a) {
                                         var id = _a.id;
                                         return id === keyId_1;
@@ -85,7 +89,7 @@ var DIDJwt = /** @class */ (function () {
                                     return [4 /*yield*/, node_jose_1.JWK.asKey(publicKey["publicKeyJwk"])];
                                 case 2:
                                     jwk = _a.sent();
-                                    onSuccess(jsonwebtoken_1.default.verify(jwt, jwk.toPEM(false), options));
+                                    onSuccess(JWT.verify(jwt, jwk.toPEM(false), options));
                                     return [3 /*break*/, 4];
                                 case 3:
                                     err_1 = _a.sent();

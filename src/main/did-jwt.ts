@@ -6,8 +6,8 @@ import {
 import { JwtSigner } from "./signers";
 import { WrongIssuerError } from "./errors";
 
-import JWT from "jsonwebtoken";
-import Util from "util";
+import * as JWT from "jsonwebtoken";
+import * as Util from "util";
 
 export class DIDJwt {
   public static async sign(payload: object, signer: JwtSigner,
