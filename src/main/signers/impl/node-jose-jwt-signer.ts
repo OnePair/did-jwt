@@ -12,7 +12,7 @@ export class NodeJwtSigner implements JwtSigner {
     this.key = key;
   }
 
-  sign(payload: object, options?: JWT.SignOptions): string {
+  public async sign(payload: object, options?: JWT.SignOptions): Promise<string> {
     return JWT.sign(payload, this.key.toPEM(true), options);
   }
 }

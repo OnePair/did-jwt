@@ -39,8 +39,8 @@ describe("DID JWT Tests", () => {
   });
 
   it("Should create a JWT without an exception", () => {
-    assert.doesNotThrow(() => {
-      jwt = DIDJwt.sign({ "name": "anonymous" }, signer1, {
+    assert.doesNotThrow(async () => {
+      jwt = await DIDJwt.sign({ "name": "anonymous" }, signer1, {
         issuer: did1.getDidUri(),
         keyid: "keys-1",
         algorithm: "ES256"

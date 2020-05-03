@@ -79,14 +79,21 @@ describe("DID JWT Tests", function () {
         });
     }); });
     it("Should create a JWT without an exception", function () {
-        chai_1.assert.doesNotThrow(function () {
-            jwt = main_1.DIDJwt.sign({ "name": "anonymous" }, signer1, {
-                issuer: did1.getDidUri(),
-                keyid: "keys-1",
-                algorithm: "ES256"
+        chai_1.assert.doesNotThrow(function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, main_1.DIDJwt.sign({ "name": "anonymous" }, signer1, {
+                            issuer: did1.getDidUri(),
+                            keyid: "keys-1",
+                            algorithm: "ES256"
+                        })];
+                    case 1:
+                        jwt = _a.sent();
+                        chai_1.assert.isNotNull(jwt);
+                        return [2 /*return*/];
+                }
             });
-            chai_1.assert.isNotNull(jwt);
-        });
+        }); });
     });
     it("JWT verification against the right issuer should pass", function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;

@@ -10,9 +10,9 @@ import JWT from "jsonwebtoken";
 import Util from "util";
 
 export class DIDJwt {
-  public static sign(payload: object, signer: JwtSigner,
-    options?: JWT.SignOptions): string {
-    return signer.sign(payload, options);
+  public static async sign(payload: object, signer: JwtSigner,
+    options?: JWT.SignOptions): Promise<string> {
+    return await signer.sign(payload, options);
   }
 
   public static async verify(resolver: Resolver, jwt: string,

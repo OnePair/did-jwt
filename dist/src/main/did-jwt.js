@@ -47,7 +47,14 @@ var DIDJwt = /** @class */ (function () {
     function DIDJwt() {
     }
     DIDJwt.sign = function (payload, signer, options) {
-        return signer.sign(payload, options);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, signer.sign(payload, options)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
     };
     DIDJwt.verify = function (resolver, jwt, did, options) {
         return __awaiter(this, void 0, void 0, function () {
