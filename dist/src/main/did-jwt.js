@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,14 +54,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DIDJwt = void 0;
 var node_jose_1 = require("node-jose");
 var errors_1 = require("./errors");
 var JWT = __importStar(require("jsonwebtoken"));
@@ -80,13 +93,12 @@ var DIDJwt = /** @class */ (function () {
                                     keyId_1 = decodedJwt["header"]["kid"];
                                     // Default issuing key
                                     if (keyId_1 == undefined)
-                                        keyId_1 = "#keys-1";
-                                    keyId_1 = Util.format("%s#%s", did, keyId_1);
+                                        keyId_1 = Util.format("%s#keys-1", did);
                                     publicKey = didDoc.publicKey.find(function (_a) {
                                         var id = _a.id;
                                         return id === keyId_1;
                                     });
-                                    return [4 /*yield*/, node_jose_1.JWK.asKey(publicKey["publicKeyJwk"])];
+                                    return [4 /*yield*/, node_jose_1.JWK.asKey(publicKey.publicKeyPem, "pem")];
                                 case 2:
                                     jwk = _a.sent();
                                     onSuccess(JWT.verify(jwt, jwk.toPEM(false), options));
