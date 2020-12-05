@@ -2,6 +2,7 @@ import { JWK } from "node-jose";
 import { Resolver, DIDDocument, PublicKey } from "did-resolver";
 import { JwtSigner } from "./signers";
 import { WrongIssuerError } from "./errors";
+import { VerificationResult } from "./verification-result";
 
 import { pki } from "node-forge";
 
@@ -18,18 +19,21 @@ export class DIDJwt {
     return await signer.sign(payload, options);
   }
 
-  public static async verify(resolver: Resolver, jwt: string): Promise<object>;
+  public static async verify(
+    resolver: Resolver,
+    jwt: string
+  ): Promise<VerificationResult>;
   public static async verify(
     resolver: Resolver,
     jwt: string,
     caStore?: pki.CAStore
-  ): Promise<object>;
+  ): Promise<VerificationResult>;
   public static async verify(
     resolver: Resolver,
     jwt: string,
     caStore?: pki.CAStore,
     options?: JWT.VerifyOptions
-  ): Promise<object> {
+  ): Promise<VerificationResult> {
     // 1) Get the jwk
     const decodedJwt: any = JWT.decode(jwt, { complete: true });
 
@@ -52,10 +56,14 @@ export class DIDJwt {
     const jwk: JWK.Key = await JWK.asKey(publicKey.publicKeyPem, "pem");
 
     // 6) Verify the JWT
-    const verificationResult: any = JWT.verify(jwt, jwk.toPEM(false), options);
+    const verifiedPayload: any = JWT.verify(jwt, jwk.toPEM(false), options);
 
     // set the issuer
-    verificationResult["issuer"] = did;
+    let verificationResult: VerificationResult = {
+      issuer: did,
+      payload: verifiedPayload,
+    };
+    //verificationResult["issuer"] = did;
 
     // 7) Verify the issuer's cert
     if ("rootCertificate" in publicKey && caStore != undefined) {
@@ -67,7 +75,7 @@ export class DIDJwt {
       pki.verifyCertificateChain(caStore, [certificate]);
 
       // Get the issuer's domain name
-      verificationResult["domainName"] = certificate.issuer.getField(
+      verificationResult.issuerDomainName = certificate.issuer.getField(
         "CN"
       ).value;
     }

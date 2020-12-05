@@ -76,7 +76,7 @@ var DIDJwt = /** @class */ (function () {
     };
     DIDJwt.verify = function (resolver, jwt, caStore, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var decodedJwt, keyId, did, didDoc, publicKey, jwk, verificationResult, certificate;
+            var decodedJwt, keyId, did, didDoc, publicKey, jwk, verifiedPayload, verificationResult, certificate;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -96,16 +96,19 @@ var DIDJwt = /** @class */ (function () {
                         return [4 /*yield*/, node_jose_1.JWK.asKey(publicKey.publicKeyPem, "pem")];
                     case 2:
                         jwk = _a.sent();
-                        verificationResult = JWT.verify(jwt, jwk.toPEM(false), options);
-                        // set the issuer
-                        verificationResult["issuer"] = did;
+                        verifiedPayload = JWT.verify(jwt, jwk.toPEM(false), options);
+                        verificationResult = {
+                            issuer: did,
+                            payload: verifiedPayload,
+                        };
+                        //verificationResult["issuer"] = did;
                         // 7) Verify the issuer's cert
                         if ("rootCertificate" in publicKey && caStore != undefined) {
                             certificate = node_forge_1.pki.certificateFromPem(publicKey["rootCertificate"]);
                             // Verify the certificate chain
                             node_forge_1.pki.verifyCertificateChain(caStore, [certificate]);
                             // Get the issuer's domain name
-                            verificationResult["domainName"] = certificate.issuer.getField("CN").value;
+                            verificationResult.issuerDomainName = certificate.issuer.getField("CN").value;
                         }
                         return [2 /*return*/, verificationResult];
                 }

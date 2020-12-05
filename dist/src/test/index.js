@@ -128,13 +128,8 @@ describe("DID JWT Tests", function () {
                 case 1:
                     verificationResult = _a.sent();
                     chai_1.expect(verificationResult).eql({
-                        name: "anonymous",
-                        iat: 1605571410,
-                        issuer: "did:jwk:ZUp3bGprMFRRa0FBUVAvTG5qT2pRdWxXYklPeWtSajIwb2dkSDV2S1JxVHB2N2" +
-                            "VtMjN1SE4vTStnRFp2c0FKUUF4TkFpNVRqMW5tZUJuTW9MbkZvek5YYTdoNkNhVW1RVmdM" +
-                            "RFNacFZibzdrdzY1OXZvakptL2lhamJrM2t4VnVDWHR4YzRTLzlad1hscTl2WWxoak5ZZ" +
-                            "3o1VHduV05aOUtkb1BmVXVPVkd5Tk12QWhXZTZWeE9YRnVIS0VVVC9OdmJkMnZ6WGx1dWd" +
-                            "5VWNJV1EyR0ZYTjBtMmpVOHNTSHhVRmRTRzN4LzNydzdoQT09",
+                        issuer: "did:jwk:ZUp3bGprMFRRa0FBUVAvTG5qT2pRdWxXYklPeWtSajIwb2dkSDV2S1JxVHB2N2VtMjN1SE4vTStnRFp2c0FKUUF4TkFpNVRqMW5tZUJuTW9MbkZvek5YYTdoNkNhVW1RVmdMRFNacFZibzdrdzY1OXZvakptL2lhamJrM2t4VnVDWHR4YzRTLzlad1hscTl2WWxoak5ZZ3o1VHduV05aOUtkb1BmVXVPVkd5Tk12QWhXZTZWeE9YRnVIS0VVVC9OdmJkMnZ6WGx1dWd5VWNJV1EyR0ZYTjBtMmpVOHNTSHhVRmRTRzN4LzNydzdoQT09",
+                        payload: { name: "anonymous", iat: 1605571410 },
                     });
                     return [2 /*return*/];
             }
@@ -208,7 +203,7 @@ describe("DID JWT Tests", function () {
             }
         });
     }); });
-    it("JWT sign by cert should pass", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it("JWT signed by cert should pass", function () { return __awaiter(void 0, void 0, void 0, function () {
         var jwkResolver, resolver, caStore, verificationResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -222,10 +217,9 @@ describe("DID JWT Tests", function () {
                 case 1:
                     verificationResult = _a.sent();
                     chai_1.expect(verificationResult).to.eql({
-                        name: "anonymous",
-                        iat: 1607134336,
                         issuer: "did:jwk:ZUp6VmxFZXY2OGdSaGYvTDNkTFhZaFk1d0N5YU9TZFJUSVloTUlsSnBKaVQ0Zjl1dmZlQWdUMGJiKzFkOTRjcWROZXBnL09QcjJZK3ZuNzdjbTdnNnk5ZlRaVjl6dmtldC8wci8rdDdMRDVzSitZUFN4QlNoRFBEczFLTFZBWkJ5c0N5c1A1WmhRLzdVOU45S3BCNHRtL1NDc1NINGZuZkdjT1BMNEd6R3puRGczUEFXL0Nvd0RkMWxnSi92ZVZZUmdHMVkvR2kwNlVIcGlxQllpUWpXemRuZmMzNmEwZWY1aEowWlVBKzR5Ulp4cmZ3TFV6RVJyWEhhY096NEJuYndoREpVYTVYSWNWOXVWNnRNMXU4dC9EQVJqSVBMUGt0dTdFUDFKeExLWnlZbnFxbUNhK0pIYWR4TXZ6c1VUOVRvSWFxMUNvNEo2Q2JHV09LRzdyZnVMRU9aSFNtL1BlUlJ4WmlUbzNtTjQ0cHFDVmdZdmYwUmQ1a3FHYWN2ZlVCaTZKT0kzZ2F2MUNkRFZWT0YyV04zTjlTZkhPeDUwQmF1VFBNVEg4M2sydVppNCtFYWxrdnlyejJlb2M1Mkgxb0NvclZwUG5ZTEhsSDhPL3daaTZXeUlnYWs2YXU4Y2I0N3lWb2hneG5hbE4rYU50SDNQd2pMckFCODNNWDZkZHZmL3ZTWlpsVE9KWUZ4Y1lDbTk4NE8xVFVkeVNYYTJwODdocGpnODNuZUUwSGpRaVFPOCtVT212RC9NNXp3R1FLdzJOQW9UTXd2V1NpY01RK3RYTW5NSDd4VkdjYUd2NXdMSFI1V3dmNHozNjIyS1FvS01za1lLYkk1ZTg2SS8va1lOdTBQL2lOV05NMjNhUXlOZlFhN0xyTDd6ckh3NFlyWS81UHh2OG5xNWxRdDZlTnRVUE9zMjJSM3hUTy92YzN3U2E1S0FHSGdkSW5KMi9wQVA0MXk3YUpMdVo4ZUZicUR0aTQ0bWUveW9Ic2xZdkNuSXI3UzNmc2pmL0ZPUTdNZjNDdHBZL28vT2gyay8rc0dmUFJqQ3NLM2dJL2RMWGY3T2ZNQU1NZjczeDUzWmoxOUx5MXN4MlZjR3hZWWFWY29NaEZLU3k4c0ZZZGR4d1Q3bWJzQ2RoK1cyVGxaQzcwVVhtSDY1UGJtOUJ4Q0l0ejRwS2U0NHZBUGFoRFcvUTZrTXl6VE16VVVxWUpOalRIYzFPdHlIM3FuVUI3WUFxVmZEMHBMSG5GekpNbW9lNTFIaXJMbzYrQzdRck1NczFFT3Fwamp4SXdYTlVyNTNWUEhNTUEyN0lsVWVWZ3p5YXVuWTg3eWw4V0xpR1hOc1VZYStwYWwzWkhoVVY2M2kxdmJ4djREWVdVSlZjOEZmWHFKUmVhS1dzcnl5V3h6MnJRc3NYSlZDdzB4UXphTkRSR0xqWFd4S01kZTF3TDRVRzVvaGVsZVBtQkZ5MklBV2orY2h6WmpFUDFTbkdIbnVWV3k5ZGp2UmRPdFFVU2Y4YkdibjFHVjdzY2hHZGxIZFJudFR3QTdnL1BOVVBaVkNLOXdReXdKd0VBODRlZkFhTVJycGhkaG5sV0svOCs0bk9jbTFrekVzTmxDRlZvdnhTN1RaOE5rcWVDRStvYXp4TlZ3QmI5ZWJsSFRrd3pYWms0YU55dlhFaUhrdk91Rk82cG8zciticU5yVXU2M3JZN09DWXFhRm5tdW80T3VBRWlIN3R5TkRJc0xJYTdXVUp1OVRORXRpemVlakxUUXVkeG5YVSt1aG9GV1lUbXlXeWkrNHR0RW5BWXpXeDMzcEFjcnd1djh3Z1d0WFJ5UWF3YXk1eklpV3BQOE5iakxZT2dSeFk3bGRuMmhiMU9tTzhpUERsSW1PM1ZXNExBTkxhL1g3MVl5MDBTbXAvS3FpMXBQMkM3WmlFMncyUlZhNHlwTG9UZWJMUzI2UEcrZDZzZmVGUXVLbXBsNWlOSXBoS3g1Y001ams2b0xCNzBCdG1rV01ZYUNWVkdWTERCeUgrbGRqd2YxWmJKLy8vMlRJRCtpdzZnL0ZpOXhsb2ZaTEhvbWhMUFRKVkZlWHRlQjFwYWh1ZlRTOXI4Y0thZkJ5Y1NmSXVVWCszK0lGRE41UTUyS01uUTAzb1V1Q01OTXNXRzczMjlKRFZ2ZGs5d2xqRzVIUEVnWkx4ZGdkNjRJRnlNNC9hajhONFlJZk5HNEVQWTJEb25Ia2JUSjk2RGxxQ0xMY2FydnZJWWx2REplMVlyTU54MGNabnFXWThuem9leWE1cFVQMENIeXBJa284cmdZakZSdHNEUzhEVVZ3WEFQZUlsUmRkNTlNRnhNbjZwNmR0SnhobUxaUm9zTTN4b1lrQXBiRHdMaTg3S3NiRHdoeGRzanFDWHlxa2V2OUtiNGpURExrRjVxVzhTZzNGK1lGamNJQlJkMUs4TlFkdWdsVzR2RHAyMTJXTkc0Mk92Qk1wTGJjVk5jNHRuS2hDM0tEcFpnMEZWc1ErcWwzY2pQRXlTditRaEtJd1BUZE5hNk5sMGtDR0FZOTQ2YThLNW5nRXlLUjZRWTNjVWlTb2NhZ2dhT20veG9wWjdhek9KWVl3TnFncDF2SDdLaGNvSEVlU0R2OGVLQW5TWWJQSmdna1dHSXl4MlFGVDJycTN1bHlVZ1hDKzhtQmVCc0d2d1kwNllBY0xyNElyWXFzc3hYMkxPNHZWQkxNYTEzSDBxMHA2SGFHUzJsVlJ5cEQ2YVlIR1ZQT29ZN0hrRmR5M3V6YzNIYTh1cEk2bm9qVFF4cXhOdXVsMDJTUldza29pZllxOFc4L2ZxVEpRNWlxYlk2S0tlOEVKcXZ0aHp3ZkdYUHZxNUswYkNYV2FBOUFmQ3dKZURNVlptUm93dVZkbFNHZURXRnhWeXVvWGZGbGpZeVNaeDNZUUcrbUQyKzBXL3ZzTUdxZGFMQnp1Y3dVamcxZGYreWJRY0prVG9vbWErZURjRGxDUjI1dm9YU3hhTWlZemlDQ09VZS9ZekNyVm9vTFBISHQvYWFQU2h1cktJVW9QcEh5OTMvK0N5aldXWDQ9",
-                        domainName: "example.org",
+                        payload: { name: "anonymous", iat: 1607134336 },
+                        issuerDomainName: "example.org",
                     });
                     return [2 /*return*/];
             }

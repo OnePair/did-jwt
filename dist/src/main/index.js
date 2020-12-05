@@ -12,3 +12,4 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./did-jwt"), exports);
 __exportStar(require("./signers"), exports);
+__exportStar(require("./verification-result"), exports);
