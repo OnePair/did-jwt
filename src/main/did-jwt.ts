@@ -3,8 +3,11 @@ import { Resolver, DIDDocument, PublicKey } from "did-resolver";
 import { JwtSigner } from "./signers";
 import { WrongIssuerError } from "./errors";
 
+import { pki } from "node-forge";
+
 import * as JWT from "jsonwebtoken";
-import * as Util from "util";
+
+const KEY_ID_FRAGMENT_PATTERN = /^(?<did>(did):(.+):(.+))#(?<fragment>.+)$/;
 
 export class DIDJwt {
   public static async sign(
@@ -15,44 +18,60 @@ export class DIDJwt {
     return await signer.sign(payload, options);
   }
 
+  public static async verify(resolver: Resolver, jwt: string): Promise<object>;
   public static async verify(
     resolver: Resolver,
     jwt: string,
-    did: string
+    caStore?: pki.CAStore
   ): Promise<object>;
   public static async verify(
     resolver: Resolver,
     jwt: string,
-    did: string,
+    caStore?: pki.CAStore,
     options?: JWT.VerifyOptions
   ): Promise<object> {
-    return new Promise<object>(
-      async (onSuccess: Function, onError: Function) => {
-        try {
-          // 1) Resolve the did document
-          const didDoc: DIDDocument = await resolver.resolve(did);
+    // 1) Get the jwk
+    const decodedJwt: any = JWT.decode(jwt, { complete: true });
 
-          // 2) Check the issuer
-          if (didDoc.id != did) throw new WrongIssuerError("Wrong issuer!");
+    // 2) Get the key id
+    const keyId: string = decodedJwt["header"]["kid"];
 
-          // 2) Get the jwk
-          const decodedJwt: any = JWT.decode(jwt, { complete: true });
-          let keyId: string = decodedJwt["header"]["kid"];
+    // 3) Get the did
+    const did = KEY_ID_FRAGMENT_PATTERN.exec(keyId).groups.did;
 
-          // Default issuing key
-          if (keyId == undefined) keyId = Util.format("%s#keys-1", did);
+    // 4) Resolve the did document
+    const didDoc: DIDDocument = await resolver.resolve(did);
 
-          const publicKey: PublicKey = didDoc.publicKey.find(
-            ({ id }) => id === keyId
-          );
+    // 5) Check the issuer
+    if (didDoc.id != did) throw new WrongIssuerError("Wrong issuer!");
 
-          const jwk: JWK.Key = await JWK.asKey(publicKey.publicKeyPem, "pem");
-
-          onSuccess(JWT.verify(jwt, jwk.toPEM(false), options));
-        } catch (err) {
-          onError(err);
-        }
-      }
+    const publicKey: PublicKey = didDoc.publicKey.find(
+      ({ id }) => id === keyId
     );
+
+    const jwk: JWK.Key = await JWK.asKey(publicKey.publicKeyPem, "pem");
+
+    // 6) Verify the JWT
+    const verificationResult: any = JWT.verify(jwt, jwk.toPEM(false), options);
+
+    // set the issuer
+    verificationResult["issuer"] = did;
+
+    // 7) Verify the issuer's cert
+    if ("rootCertificate" in publicKey && caStore != undefined) {
+      const certificate: pki.Certificate = pki.certificateFromPem(
+        publicKey["rootCertificate"]
+      );
+
+      // Verify the certificate chain
+      pki.verifyCertificateChain(caStore, [certificate]);
+
+      // Get the issuer's domain name
+      verificationResult["domainName"] = certificate.issuer.getField(
+        "CN"
+      ).value;
+    }
+
+    return verificationResult;
   }
 }

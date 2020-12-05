@@ -14,7 +14,8 @@
     "did-resolver": "^1.1.0",
     "jsonwebtoken": "^8.5.1",
     "node-did-jwk": "git+https://github.com/OnePair/node-did-jwk.git#c18af431407a8521ddc3f02976e8d9c077f96566",
-    "node-jose": "^1.1.3"
+    "node-forge": "^0.10.0",
+    "node-jose": "^2.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.4",

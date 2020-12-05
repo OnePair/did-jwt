@@ -58,8 +58,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DIDJwt = void 0;
 var node_jose_1 = require("node-jose");
 var errors_1 = require("./errors");
+var node_forge_1 = require("node-forge");
 var JWT = __importStar(require("jsonwebtoken"));
-var Util = __importStar(require("util"));
+var KEY_ID_FRAGMENT_PATTERN = /^(?<did>(did):(.+):(.+))#(?<fragment>.+)$/;
 var DIDJwt = /** @class */ (function () {
     function DIDJwt() {
     }
@@ -73,44 +74,41 @@ var DIDJwt = /** @class */ (function () {
             });
         });
     };
-    DIDJwt.verify = function (resolver, jwt, did, options) {
+    DIDJwt.verify = function (resolver, jwt, caStore, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
+            var decodedJwt, keyId, did, didDoc, publicKey, jwk, verificationResult, certificate;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (onSuccess, onError) { return __awaiter(_this, void 0, void 0, function () {
-                        var didDoc, decodedJwt, keyId_1, publicKey, jwk, err_1;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    _a.trys.push([0, 3, , 4]);
-                                    return [4 /*yield*/, resolver.resolve(did)];
-                                case 1:
-                                    didDoc = _a.sent();
-                                    // 2) Check the issuer
-                                    if (didDoc.id != did)
-                                        throw new errors_1.WrongIssuerError("Wrong issuer!");
-                                    decodedJwt = JWT.decode(jwt, { complete: true });
-                                    keyId_1 = decodedJwt["header"]["kid"];
-                                    // Default issuing key
-                                    if (keyId_1 == undefined)
-                                        keyId_1 = Util.format("%s#keys-1", did);
-                                    publicKey = didDoc.publicKey.find(function (_a) {
-                                        var id = _a.id;
-                                        return id === keyId_1;
-                                    });
-                                    return [4 /*yield*/, node_jose_1.JWK.asKey(publicKey.publicKeyPem, "pem")];
-                                case 2:
-                                    jwk = _a.sent();
-                                    onSuccess(JWT.verify(jwt, jwk.toPEM(false), options));
-                                    return [3 /*break*/, 4];
-                                case 3:
-                                    err_1 = _a.sent();
-                                    onError(err_1);
-                                    return [3 /*break*/, 4];
-                                case 4: return [2 /*return*/];
-                            }
+                switch (_a.label) {
+                    case 0:
+                        decodedJwt = JWT.decode(jwt, { complete: true });
+                        keyId = decodedJwt["header"]["kid"];
+                        did = KEY_ID_FRAGMENT_PATTERN.exec(keyId).groups.did;
+                        return [4 /*yield*/, resolver.resolve(did)];
+                    case 1:
+                        didDoc = _a.sent();
+                        // 5) Check the issuer
+                        if (didDoc.id != did)
+                            throw new errors_1.WrongIssuerError("Wrong issuer!");
+                        publicKey = didDoc.publicKey.find(function (_a) {
+                            var id = _a.id;
+                            return id === keyId;
                         });
-                    }); })];
+                        return [4 /*yield*/, node_jose_1.JWK.asKey(publicKey.publicKeyPem, "pem")];
+                    case 2:
+                        jwk = _a.sent();
+                        verificationResult = JWT.verify(jwt, jwk.toPEM(false), options);
+                        // set the issuer
+                        verificationResult["issuer"] = did;
+                        // 7) Verify the issuer's cert
+                        if ("rootCertificate" in publicKey && caStore != undefined) {
+                            certificate = node_forge_1.pki.certificateFromPem(publicKey["rootCertificate"]);
+                            // Verify the certificate chain
+                            node_forge_1.pki.verifyCertificateChain(caStore, [certificate]);
+                            // Get the issuer's domain name
+                            verificationResult["domainName"] = certificate.issuer.getField("CN").value;
+                        }
+                        return [2 /*return*/, verificationResult];
+                }
             });
         });
     };
