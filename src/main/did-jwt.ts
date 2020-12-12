@@ -61,6 +61,7 @@ export class DIDJwt {
     // set the issuer
     let verificationResult: VerificationResult = {
       issuer: did,
+      jwt,
       payload: verifiedPayload,
     };
     //verificationResult["issuer"] = did;

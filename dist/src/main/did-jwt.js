@@ -99,6 +99,7 @@ var DIDJwt = /** @class */ (function () {
                         verifiedPayload = JWT.verify(jwt, jwk.toPEM(false), options);
                         verificationResult = {
                             issuer: did,
+                            jwt: jwt,
                             payload: verifiedPayload,
                         };
                         //verificationResult["issuer"] = did;
