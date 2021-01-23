@@ -79,6 +79,7 @@ export class DIDJwt {
       verificationResult.issuerDomainName = certificate.issuer.getField(
         "CN"
       ).value;
+      verificationResult.certificate = publicKey["rootCertificate"];
     }
 
     return verificationResult;

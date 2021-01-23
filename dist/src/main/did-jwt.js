@@ -110,6 +110,7 @@ var DIDJwt = /** @class */ (function () {
                             node_forge_1.pki.verifyCertificateChain(caStore, [certificate]);
                             // Get the issuer's domain name
                             verificationResult.issuerDomainName = certificate.issuer.getField("CN").value;
+                            verificationResult.certificate = publicKey["rootCertificate"];
                         }
                         return [2 /*return*/, verificationResult];
                 }

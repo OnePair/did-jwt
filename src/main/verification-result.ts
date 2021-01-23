@@ -3,4 +3,5 @@ export class VerificationResult {
   payload: object;
   jwt: string;
   issuerDomainName?: string;
+  certificate?: string;
 }
